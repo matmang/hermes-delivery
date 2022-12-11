@@ -2,6 +2,8 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { login } from "../../api/api";
+import { Login } from "../../api/dtos/login.interface";
 import { FormError } from "../../components/form-error";
 import { LOCALSTORAGE_TOKEN } from "../../constants";
 
@@ -11,26 +13,24 @@ interface ILoginForm {
   resultError?: string;
 }
 
-export const Login = () => {
+export const LoginScreen = () => {
   const {
     register,
     getValues,
     formState: { errors },
     handleSubmit,
   } = useForm<ILoginForm>();
-  const onCompleted = (data: any) => {
-    const {
-      login: { ok, token },
-    } = data;
-    if (ok && token) {
-      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
-      //jwt 토큰을 redux에 저장할 것.
-    }
-  };
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const { email, password } = getValues();
-    // 로그인 api 호출
-    console.log(email + password);
+    const response = await login({ email, password });
+    const { ok, error, token } = response?.data;
+    if (ok && token) {
+      alert("헤르메스에 오신 것을 환영합니다!");
+      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+      window.location.replace("/");
+    } else {
+      console.log(error);
+    }
   };
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">

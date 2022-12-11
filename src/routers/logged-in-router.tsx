@@ -1,9 +1,20 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Order } from "../pages/client/Order";
+import { Store } from "../pages/client/Store";
+import { Stores } from "../pages/client/Stores";
 
 const clientRoutes = [
   {
-    path: "/stores",
-    component: <div />,
+    path: "/",
+    component: <Stores />,
+  },
+  {
+    path: "/store/:id",
+    component: <Store />,
+  },
+  {
+    path: "/order/:id",
+    component: <Order />,
   },
 ];
 
@@ -31,9 +42,11 @@ export const LoggedInRouter = () => {
       <Routes>
         {user.role === "CLIENT" &&
           clientRoutes.map((route) => (
-            <Route key={route.path} path={route.path}>
-              {route.component}
-            </Route>
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
           ))}
         {user.role === "OWNER" &&
           ownerRoutes.map((route) => (

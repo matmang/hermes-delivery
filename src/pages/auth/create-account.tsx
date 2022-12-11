@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { createAccount } from "../../api/api";
 import { FormError } from "../../components/form-error";
 
 export enum UserRole {
@@ -22,20 +23,20 @@ export const CreateAccount = () => {
     handleSubmit,
   } = useForm<ICreateAccountForm>({ defaultValues: { role: UserRole.CLIENT } });
   const navigate = useNavigate();
-  const onCompleted = (data: any) => {
-    const {
-      createAccount: { ok, error },
-    } = data;
+  const onSubmit = async () => {
+    const { email, password, role } = getValues();
+    const response = await createAccount({
+      email,
+      password,
+      role,
+    });
+    const { ok, error } = response?.data;
     if (ok) {
       alert("계정이 생성되었습니다. 로그인 해주세요.");
       navigate("/");
     } else {
       console.log(error);
     }
-  };
-  const onSubmit = () => {
-    const { email, password, role } = getValues();
-    console.log(email);
   };
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">
